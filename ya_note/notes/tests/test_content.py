@@ -1,9 +1,9 @@
+from http import HTTPStatus
 
-from django.test import TestCase, Client
-from django.urls import reverse
 from django.contrib.auth import get_user_model
+from django.test import Client, TestCase
+from django.urls import reverse
 from notes.models import Note
-
 
 User = get_user_model()
 
@@ -24,8 +24,6 @@ class TestListPage(TestCase):
 
     def test_task_list_page_show_correct_context(self):
         response = self.authorized_client.get(reverse('notes:list'))
-        # Взяли первый элемент из списка и проверили, что его содержание
-        # совпадает с ожидаемым
         first_object = response.context['object_list'][0]
         task_title_0 = first_object.title
         task_text_0 = first_object.text
@@ -35,15 +33,11 @@ class TestListPage(TestCase):
         self.assertEqual(task_slug_0, 'slug')
 
     def test_authorized_client_has_form(self):
-        # Авторизуем клиент при помощи ранее созданного пользователя.
-        self.client.force_login(self.user)
-        response = self.client.get(reverse('notes:add'))
+        response = self.authorized_client.get(reverse('notes:add'))
         self.assertIn('form', response.context)
 
     def test_a_authorized_client_has_form(self):
-        # Авторизуем клиент при помощи ранее созданного пользователя.
-        self.client.force_login(self.user)
-        response = self.client.get(reverse(
+        response = self.authorized_client.get(reverse(
             'notes:edit', args=(self.note.slug,))
         )
         self.assertIn('form', response.context)

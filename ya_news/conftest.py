@@ -56,3 +56,10 @@ def comment_list(news, author):
         )
         comment.created = now + timedelta(days=index)
         comment.save()
+
+
+@pytest.fixture
+# Используем встроенную фикстуру для модели пользователей django_user_model.
+def form_data():
+    form_data = {'text': 'text'}
+    return form_data

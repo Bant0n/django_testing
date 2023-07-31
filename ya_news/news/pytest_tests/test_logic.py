@@ -3,29 +3,34 @@ from news.models import Comment
 from django.urls import reverse
 from news.forms import WARNING, BAD_WORDS
 from pytest_django.asserts import assertFormError
+from news.forms import CommentForm
+from random import choice
 
 
 @pytest.mark.django_db
 def test_anonymous_user_cant_create_comment(client, news):
+    comments_count_before = Comment.objects.count()
     form_data = {'text': 'text'}
     url = reverse('news:detail', args=(news.id,))
     client.post(url, form_data)
-    comments_count = Comment.objects.count()
-    assert comments_count == 0
+    comments_count_after = Comment.objects.count()
+    assert comments_count_after == comments_count_before
 
 
 @pytest.mark.django_db
-def test_user_can_create_comment(author_client, news):
-    form_data = {'text': 'text'}
+def test_user_can_create_comment(author_client, news, form_data):
     url = reverse('news:detail', args=(news.id,))
     author_client.post(url, form_data)
+    response = author_client.get(url)
     comments_count = Comment.objects.count()
+    assert isinstance(response.context['form'], CommentForm)
     assert comments_count == 1
 
 
 @pytest.mark.django_db
 def test_user_cant_create_bad_words(author_client, news):
-    bad_words = {'text': f'Какой-то текст, {BAD_WORDS[0]}, еще текст'}
+    one_bad_word = choice(BAD_WORDS)
+    bad_words = {'text': f'Какой-то текст, {one_bad_word}, еще текст'}
     url = reverse('news:detail', args=(news.id,))
     response = author_client.post(url, bad_words)
     assertFormError(

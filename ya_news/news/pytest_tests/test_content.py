@@ -1,6 +1,7 @@
 import pytest
-
+from django.conf import settings
 from django.urls import reverse
+from news.forms import CommentForm
 
 
 @pytest.mark.django_db
@@ -12,7 +13,7 @@ def test_news_order(client, news_list):
     all_dates = [news.date for news in object_list]
     # Сортируем полученный список по убыванию.
     sorted_dates = sorted(all_dates, reverse=True)
-    assert count_news == 10
+    assert count_news == settings.NEWS_COUNT_ON_HOME_PAGE
     assert all_dates == sorted_dates
 
 
@@ -38,3 +39,4 @@ def test_authorized_client_has_form(author_client, news):
     url = reverse('news:detail', args=(news.id,))
     response = author_client.get(url)
     assert 'form' in response.context
+    assert isinstance(response.context['form'], CommentForm)
