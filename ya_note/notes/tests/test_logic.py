@@ -41,8 +41,8 @@ class TestCommentCreation(TestCase):
     def test_auth_user_cant_create_comment(self):
         self.authorized_client.post(self.url, data=self.form_data)
         comments_count = Note.objects.count()
-        #new_note = Note.objects.get()
-        #self.assertEqual(new_note.title, self.form_data['title'])
+        #  new_note = Note.objects.get()
+        #  self.assertEqual(new_note.title, self.form_data['title'])
         self.assertEqual(comments_count, 1)
 
 
