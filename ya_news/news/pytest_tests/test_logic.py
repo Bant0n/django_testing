@@ -59,8 +59,7 @@ def test_reader_can_delete_comment(client, comment):
 
 
 @pytest.mark.django_db
-def test_author_can_edit_comment(comment, author_client):
-    form_data = {'text': 'text'}
+def test_author_can_edit_comment(comment, author_client, form_data):
     url = reverse('news:edit', args=(comment.id,))
     author_client.post(url, form_data)
     comment.refresh_from_db()
@@ -68,8 +67,7 @@ def test_author_can_edit_comment(comment, author_client):
 
 
 @pytest.mark.django_db
-def test_user_cant_edit_comment(comment, client):
-    form_data = {'text': 'text'}
+def test_user_cant_edit_comment(comment, client, form_data):
     url = reverse('news:edit', args=(comment.id,))
     client.post(url, form_data)
     comment.refresh_from_db()
