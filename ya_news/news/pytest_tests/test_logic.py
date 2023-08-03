@@ -8,9 +8,8 @@ from random import choice
 
 
 @pytest.mark.django_db
-def test_anonymous_user_cant_create_comment(client, news):
+def test_anonymous_user_cant_create_comment(client, news, form_data):
     comments_count_before = Comment.objects.count()
-    form_data = {'text': 'text'}
     url = reverse('news:detail', args=(news.id,))
     client.post(url, form_data)
     comments_count_after = Comment.objects.count()
@@ -21,9 +20,10 @@ def test_anonymous_user_cant_create_comment(client, news):
 def test_user_can_create_comment(author_client, news, form_data):
     url = reverse('news:detail', args=(news.id,))
     author_client.post(url, form_data)
-    response = author_client.get(url)
     comments_count = Comment.objects.count()
-    assert isinstance(response.context['form'], CommentForm)
+    comments_obj = Comment.objects.get()
+    assert comments_obj.text == form_data['text']
+    assert comments_obj.author == form_data['author']
     assert comments_count == 1
 
 

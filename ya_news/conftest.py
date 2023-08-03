@@ -60,6 +60,6 @@ def comment_list(news, author):
 
 @pytest.fixture
 # Используем встроенную фикстуру для модели пользователей django_user_model.
-def form_data():
-    form_data = {'text': 'text'}
+def form_data(author):
+    form_data = {'text': 'text', 'author': author}
     return form_data

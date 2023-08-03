@@ -11,7 +11,6 @@ def test_news_order(client, news_list):
     object_list = response.context['object_list']
     count_news = object_list.count()
     all_dates = [news.date for news in object_list]
-    # Сортируем полученный список по убыванию.
     sorted_dates = sorted(all_dates, reverse=True)
     assert count_news == settings.NEWS_COUNT_ON_HOME_PAGE
     assert all_dates == sorted_dates

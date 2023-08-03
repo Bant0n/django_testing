@@ -31,19 +31,25 @@ class TestCommentCreation(TestCase):
             'slug': 'slug-test',
             'author': cls.user,
         }
-        cls.url = reverse('notes:list')
+        cls.url = reverse('notes:add')
 
     def test_anonymous_user_cant_create_comment(self):
-        self.client.post(self.url, data=self.form_data)
+        self.client.post(self.url, data=self.form_data, follow=True)
         comments_count = Note.objects.count()
         self.assertEqual(comments_count, 1)
 
-    def test_auth_user_cant_create_comment(self):
+    def test_auth_user_can_create_comment(self):
         self.authorized_client.post(self.url, data=self.form_data)
         comments_count = Note.objects.count()
-        #  new_note = Note.objects.get()
-        #  self.assertEqual(new_note.title, self.form_data['title'])
-        self.assertEqual(comments_count, 1)
+        self.assertTrue(
+            Note.objects.filter(
+                slug='slug-test',
+                text=self.COMMENT_TEXT,
+                title='qwe',
+                author=self.user,
+            ).exists()
+        )
+        self.assertEqual(comments_count, 2)
 
 
 class TestCommentEditDelete(TestCase):
