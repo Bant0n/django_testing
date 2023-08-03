@@ -3,7 +3,6 @@ from news.models import Comment
 from django.urls import reverse
 from news.forms import WARNING, BAD_WORDS
 from pytest_django.asserts import assertFormError
-from news.forms import CommentForm
 from random import choice
 
 
